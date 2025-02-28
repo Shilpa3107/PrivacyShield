@@ -146,13 +146,36 @@ if st.session_state.analysis_complete:
         with col1:
             st.metric("Overall Risk Score", f"{st.session_state.risk_score}/10")
         with col2:
-            risk_gauge = px.gauge(
-                value=st.session_state.risk_score,
-                range_color=[0, 10],
-                title="Risk Level",
-                color_continuous_scale=["green", "yellow", "red"]
+            # Create a horizontal bar chart for risk visualization
+            risk_df = pd.DataFrame({
+                'Score': [st.session_state.risk_score],
+                'Max': [10 - st.session_state.risk_score]  # Remaining part of the bar
+            })
+
+            fig = px.bar(risk_df, 
+                        x=['Score', 'Max'], 
+                        orientation='h',
+                        height=100,
+                        title="Risk Level",
+                        color_discrete_sequence=['#FF4B4B', '#E0E0E0'])
+
+            # Customize the layout
+            fig.update_layout(
+                showlegend=False,
+                xaxis_range=[0, 10],
+                xaxis_title=None,
+                yaxis_title=None,
+                yaxis_showticklabels=False,
+                plot_bgcolor='rgba(0,0,0,0)',
+                paper_bgcolor='rgba(0,0,0,0)',
+                margin=dict(l=20, r=20, t=30, b=20)
             )
-            st.plotly_chart(risk_gauge)
+
+            st.plotly_chart(fig, use_container_width=True)
+
+            # Add risk level text
+            risk_level = "Low" if st.session_state.risk_score <= 3 else "Medium" if st.session_state.risk_score <= 7 else "High"
+            st.markdown(f"<h3 style='text-align: center; color: {'green' if risk_level == 'Low' else 'orange' if risk_level == 'Medium' else 'red'};'>{risk_level} Risk</h3>", unsafe_allow_html=True)
 
     with tab2:
         st.subheader("App Permissions")
