@@ -21,7 +21,7 @@ A Streamlit-based application that analyzes Android APK files and Play Store app
 
 1. Clone the repository:
 ```bash
-git clone <your-repository-url>
+git clone https://github.com/Shilpa3107/PrivacyShield.git
 cd app-security-analyzer
 ```
 
